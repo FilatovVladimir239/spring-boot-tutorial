@@ -38,7 +38,7 @@ public class EmployeeController {
     @ApiOperation(value = "View a list of available employees, require ADMIN role", response = List.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 401, message = "Bad credentials"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
@@ -51,7 +51,7 @@ public class EmployeeController {
     @ApiOperation(value = "Get an employee by Id, require ADMIN role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved emploee"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 401, message = "Bad credentials"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
@@ -78,7 +78,7 @@ public class EmployeeController {
     @ApiOperation(value = "Get employee info by current username, require USER role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved emploee"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 401, message = "Bad credentials"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
@@ -96,7 +96,7 @@ public class EmployeeController {
     @ApiOperation(value = "Update an employee, require ADMIN role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully update emploee"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 401, message = "Bad credentials"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
@@ -120,7 +120,7 @@ public class EmployeeController {
     @ApiOperation(value = "Delete an employee, require ADMIN role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 401, message = "Bad credentials"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
@@ -139,10 +139,10 @@ public class EmployeeController {
         return response;
     }
 
-    @ApiOperation(value = "Employee with username or emailId exists")
+    @ApiOperation(value = "Create employee, require ADMIN role")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 401, message = "Bad credentials"),
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 409, message = "Employee with username or emailId exists"),
