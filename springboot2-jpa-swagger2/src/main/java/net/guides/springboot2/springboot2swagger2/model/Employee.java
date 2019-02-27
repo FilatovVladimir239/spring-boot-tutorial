@@ -1,14 +1,14 @@
 package net.guides.springboot2.springboot2swagger2.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "employees")
@@ -18,16 +18,16 @@ public class Employee {
 	@ApiModelProperty(notes = "The database generated employee ID")
 	private long id;
 
-	@ApiModelProperty(notes = "The employee username")
+	@ApiModelProperty(notes = "The employee username", required = true)
 	private String username;
 
-	@ApiModelProperty(notes = "The employee first name")
+	@ApiModelProperty(notes = "The employee first name", required = true)
 	private String firstName;
 
-	@ApiModelProperty(notes = "The employee last name")
+	@ApiModelProperty(notes = "The employee last name", required = true)
 	private String lastName;
 
-	@ApiModelProperty(notes = "The employee email id")
+	@ApiModelProperty(notes = "The employee email id", required = true)
 	private String emailId;
 
 	public Employee() {

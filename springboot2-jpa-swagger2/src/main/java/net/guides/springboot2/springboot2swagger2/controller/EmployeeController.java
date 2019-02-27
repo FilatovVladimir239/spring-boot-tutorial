@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import net.guides.springboot2.springboot2swagger2.exception.ConflictException;
 import net.guides.springboot2.springboot2swagger2.exception.ResourceNotFoundException;
 import net.guides.springboot2.springboot2swagger2.model.Employee;
 import net.guides.springboot2.springboot2swagger2.repository.EmployeeRepository;
@@ -28,13 +29,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/testing")
 @Api(value = "Employee Management System", description = "Operations pertaining to employee in Employee Management System")
 public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @ApiOperation(value = "View a list of available employees", response = List.class)
+    @ApiOperation(value = "View a list of available employees, require ADMIN role", response = List.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
@@ -47,7 +48,13 @@ public class EmployeeController {
         return employeeRepository.findAll();
     }
 
-    @ApiOperation(value = "Get an employee by Id")
+    @ApiOperation(value = "Get an employee by Id, require ADMIN role")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved emploee"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @GetMapping("/employees/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Employee> getEmployeeById(
@@ -68,7 +75,13 @@ public class EmployeeController {
         }
     }
 
-    @ApiOperation(value = "Get employee info by userName")
+    @ApiOperation(value = "Get employee info by current username, require USER role")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved emploee"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @GetMapping("/employees/current")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Employee> getCurrentEmployee()
@@ -80,21 +93,13 @@ public class EmployeeController {
     }
 
 
-    @ApiOperation(value = "Add an employee")
-    @PostMapping("/employees")
-    @PreAuthorize("hasRole('ADMIN')")
-    public Employee createEmployee(
-            @ApiParam(value = "Employee object store in database table", required = true)
-            @Valid @RequestBody Employee employee) {
-        employeeRepository.findByUsernameOrEmailId(employee.getUsername(), employee.getEmailId())
-                .ifPresent(employee1 -> {
-                    throw new RuntimeException("Employee with username or emailId exists");
-                });
-
-        return employeeRepository.save(employee);
-    }
-
-    @ApiOperation(value = "Update an employee")
+    @ApiOperation(value = "Update an employee, require ADMIN role")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully update emploee"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @PutMapping("/employees/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Employee> updateEmployee(
@@ -112,7 +117,13 @@ public class EmployeeController {
         return ResponseEntity.ok(updatedEmployee);
     }
 
-    @ApiOperation(value = "Delete an employee")
+    @ApiOperation(value = "Delete an employee, require ADMIN role")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @DeleteMapping("/employees/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String, Boolean> deleteEmployee(
@@ -126,5 +137,26 @@ public class EmployeeController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
+    }
+
+    @ApiOperation(value = "Employee with username or emailId exists")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 409, message = "Employee with username or emailId exists"),
+    })
+    @PostMapping("/employees")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Employee createEmployee(
+            @ApiParam(value = "Employee object store in database table", required = true)
+            @Valid @RequestBody Employee employee) {
+        employeeRepository.findByUsernameOrEmailId(employee.getUsername(), employee.getEmailId())
+                .ifPresent(employee1 -> {
+                    throw new ConflictException("Employee with username or emailId exists");
+                });
+
+        return employeeRepository.save(employee);
     }
 }
