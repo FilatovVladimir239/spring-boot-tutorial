@@ -5,7 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import net.guides.springboot2.springboot2swagger2.model.Employee;
 
+import java.util.Optional;
+
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long>{
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
+    Optional<Employee> findByUsername(String username);
 
 }

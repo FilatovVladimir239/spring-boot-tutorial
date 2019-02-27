@@ -18,6 +18,9 @@ public class Employee {
 	@ApiModelProperty(notes = "The database generated employee ID")
 	private long id;
 
+	@ApiModelProperty(notes = "The employee username")
+	private String username;
+
 	@ApiModelProperty(notes = "The employee first name")
 	private String firstName;
 
@@ -31,7 +34,8 @@ public class Employee {
 
 	}
 
-	public Employee(String firstName, String lastName, String emailId) {
+	public Employee(String username, String firstName, String lastName, String emailId) {
+		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.emailId = emailId;
@@ -45,6 +49,15 @@ public class Employee {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	@Column(name = "username", unique = true, nullable = false)
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Column(name = "first_name", nullable = false)
@@ -65,7 +78,7 @@ public class Employee {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "email_address", nullable = false)
+	@Column(name = "email_address", unique = true, nullable = false)
 	public String getEmailId() {
 		return emailId;
 	}
@@ -76,8 +89,12 @@ public class Employee {
 
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
-				+ "]";
+		return "Employee{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", emailId='" + emailId + '\'' +
+				'}';
 	}
-
 }
